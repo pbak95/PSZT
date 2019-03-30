@@ -10,21 +10,42 @@ def init_array(n, m):
     :param m:
     :return:
     """
-    return [[0] * m for i in range(n)]
+    return [[0 for x in range(n)] for y in range(m)]
 
 
-A = init_array(len(c), W)
-# print(A)
+A = init_array(W, len(c))
+print('Columns: ', len(A[0]))
+print('Rows: ', len(A))
 
-# Should return max value which could be placed in
+
+# Should return max value which could be placed in knapsack
+# Alg with duplicating items (http://algorytmika.wikidot.com/problem-plecakowy)
 for i in range(1, len(c)):
-    for j in range(W):
-        if w[i] > j:
-            A[i][j] = A[i - 1][j]
+    for j in range(1, W):
+        if j > w[i] and A[i-1][j] < A[i][j - w[i]] + c[i]:
+            A[i][j] = A[i][j - w[i]] + c[i]
         else:
-            A[i][j] = max(A[i - 1][j], A[i - 1][j - w[i]] + c[i])
+            A[i][j] = A[i - 1][j]
 
-print(A[len(c) - 1][W - 1])
+print('First alg: ', A[len(c) - 1][W - 1])
+
+A = init_array(W, len(c))
+
+# Alg with one number of each item (https://sites.google.com/site/topinfo12/home/programowanie-dynamiczne/problem-plecakowy-dyskretny)
+for i in range(1, len(c)):
+    for j in range(1, W):
+        old = A[i-1][j]
+        if w[i] > j:
+            A[i][j] = old
+        else:
+            new = A[i - 1][j - w[i]] + c[i]
+            if new > old:
+                A[i][j] = new
+            else:
+                A[i][j] = old
+
+print('Second alg: ', A[len(c) - 1][W - 1])
+
 
 # Cos z neta(https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/)
 # A Dynamic Programming based Python Program for 0-1 Knapsack problem
@@ -44,5 +65,4 @@ def knapSack(W, wt, val, n):
 
     return K[n][W]
 
-
-print(knapSack(W, w, c, len(c)))
+print('Code from net: ', knapSack(W, w, c, len(c)))
