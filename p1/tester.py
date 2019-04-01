@@ -1,8 +1,8 @@
 import sys
 import os
 
-easy_path = r"..\test_data\low_dimensional"
-hard_path = r"..\test_data\large_scale"
+easy_path = r"\test_data\low_dimensional"
+hard_path = r"\test_data\large_scale"
 
 def get_test_data(path):
 	data = []
