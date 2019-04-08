@@ -1,13 +1,13 @@
 import sys
 import os
 
-easy_path = r"\test_data\low_dimensional"
-hard_path = r"\test_data\large_scale"
+easy_path = os.path.join("test_data", "low_dimensional")
+hard_path = os.path.join("test_data", "large_scale")
 
 def get_test_data(path):
 	data = []
 	for name in os.listdir(path):
-		with open(path+"\\"+name, "r") as file:
+		with open(os.path.join(path, name), "r") as file:
 			example = {"weights": [], "values": []}
 			example["capacity"] = int(file.readline().split(" ")[1])
 			for line in file:
@@ -15,7 +15,7 @@ def get_test_data(path):
 				example["weights"].append(int(pairs[1]))
 				example["values"].append(int(pairs[0]))
 
-		with open(path+"_optimum"+"\\"+name, "r") as file:
+		with open(os.path.join(path+"_optimum", name), "r") as file:
 			example["optimum"] = int(file.read().strip())
 
 		data.append(example)

@@ -1,11 +1,10 @@
 from tester import *
 from knapsackSolver import *
+from GASolver import ga_solver
 
 data = get_test_data(easy_path)
 
-print("alg1")
-test_alg(first_alg, data)
-print("alg2")
-test_alg(second_alg, data)
 print("knapSack")
 test_alg(lambda W, w, c: knapSack(W, w, c, len(c)), data)
+print("ga")
+test_alg(ga_solver, data)
