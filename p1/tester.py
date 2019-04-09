@@ -28,4 +28,4 @@ def test_alg(func, data):
 	for example in data:
 		result = func(example["capacity"], example["weights"], example["values"])
 		print("true: \t%d\ttested: \t%d" %(example["optimum"], result)) 	
-
+		

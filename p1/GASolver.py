@@ -20,6 +20,10 @@ class Backpack:
 		weights = [x for x, y  in zip(self.weights, item_array) if y == 1]
 		return sum(values) if self.capacity >= sum(weights) else 0
 
+def single_init(items_number):
+	index = randint(0, items_number - 1)
+	return [1 if i ==  index else 0 for i in range(items_number)] 
+
 def selection(population, fitnesses):
 	fitness_sum = sum(fitnesses)
 	a = randint(1, max(fitness_sum, 2))
@@ -50,10 +54,10 @@ def mutation(x):
 def ga_solver(capacity, sizes, values):
 	b = Backpack(sizes, values, capacity)
 
-	population_size = 25
+	population_size = 20
 	items_number = b.items_number
 
-	population = [[randint(0, 1) for i in range(items_number)] for j in range(population_size)]
+	population = [single_init(items_number)for j in range(population_size)]
 	best_of_iter = []
 
 	for i in range(50):
@@ -63,7 +67,7 @@ def ga_solver(capacity, sizes, values):
 		#evaluation
 		fitnesses = [b.get_fitness(x) for x in population]
 		fitnesses, population = zip(*sorted(zip(fitnesses, population), reverse = True))
-		#print("fitnesses", fitnesses)
+		print("fitnesses", fitnesses)
 
 		#selection of pairs
 		pairs = [(selection(population, fitnesses)) for x in range(math.floor(population_size/2))]
@@ -83,7 +87,7 @@ def ga_solver(capacity, sizes, values):
 		best_value = max(fitnesses)
 		best_of_iter.append(best_value)
 		# print("best: ", best_value)
-		
+
 		#stop criterium
 		if(i>10):
 			if (best_of_iter[i-10] == best_of_iter[i]): break
