@@ -18,7 +18,7 @@ class Backpack:
 	def get_fitness(self, item_array):
 		values = [x for x, y  in zip(self.values, item_array) if y == 1]
 		weights = [x for x, y  in zip(self.weights, item_array) if y == 1]
-		return sum(values) if self.capacity >= sum(weights) else 0
+		return sum(values) - abs(self.capacity - sum(weights))
 
 def selection(population, fitnesses):
 	fitness_sum = sum(fitnesses)
@@ -55,37 +55,37 @@ def ga_solver(capacity, sizes, values):
 
 	population = [[randint(0, 1) for i in range(items_number)] for j in range(population_size)]
 	best_of_iter = []
-
-	for i in range(50):
-		#print(i)
-		#print("population", population)
+	i = 0
+	while True:
+		print(i)
+		print("population", population)
 
 		#evaluation
 		fitnesses = [b.get_fitness(x) for x in population]
 		fitnesses, population = zip(*sorted(zip(fitnesses, population), reverse = True))
-		#print("fitnesses", fitnesses)
+		print("fitnesses", fitnesses)
 
 		#selection of pairs
 		pairs = [(selection(population, fitnesses)) for x in range(math.floor(population_size/2))]
-		#print("pairs", pairs)
+		print("pairs", pairs)
 
 		#crossover
 		new_population = [crossover(x, y) for (x, y) in pairs] #crossover returns tuples that must be unpacked
 		new_population = list(chain.from_iterable(new_population))
-		#print("crossed", new_population)
+		print("crossed", new_population)
 
 		#mutation
 		new_population = list(map(mutation, new_population))
-		#print("mutated", new_population)
+		print("mutated", new_population)
 
 		#update population
 		population = new_population + [population[fitnesses.index(max(fitnesses))]]
 		best_value = max(fitnesses)
 		best_of_iter.append(best_value)
-		# print("best: ", best_value)
-		
+		print("best: ", best_value)
+		i += 1
 		#stop criterium
-		if(i>10):
-			if (best_of_iter[i-10] == best_of_iter[i]): break
+		if(i>300):
+			if (best_of_iter[i-60] == best_of_iter[i - 1]): break
 
 	return best_of_iter[-1]
