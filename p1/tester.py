@@ -27,17 +27,11 @@ def get_test_data(path):
 
 
 def test_alg(func, data):
-<<<<<<< HEAD
 	""" Tests given function with params: (capacity, weights, values) which returns optimum """
 	for example in data:
+		start_time = time.clock()
 		result = func(example["capacity"], example["weights"], example["values"])
+		print("execution time:\t", time.clock() - start_time, " seconds")
 		print("true: \t%d\ttested: \t%d" %(example["optimum"], result)) 	
 
-=======
-    """ Tests given function with params: (capacity, weights, values) which returns optimum """
-    for example in data:
-        start_time = time.clock()
-        result = func(example["capacity"], example["weights"], example["values"])
-        print("execution time:\t", time.clock() - start_time, " seconds")
-        print("optimum: \t%d\ttested: \t%d" % (example["optimum"], result))
->>>>>>> 6b888b001642b57e48333f593f8cb3a0642b0a40
+
