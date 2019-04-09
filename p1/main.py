@@ -1,8 +1,8 @@
-from p1.dynamicSolver import dynamic_alg
-from p1.tester import get_test_data, easy_path, test_alg, hard_path
+from dynamicSolver import dynamic_alg
+from tester import get_test_data, easy_path, test_alg, hard_path
 # from tester import *
 # from knapsackSolver import *
-from p1.GASolver import ga_solver
+from GASolver import ga_solver
 
 data = get_test_data(hard_path)
 

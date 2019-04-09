@@ -21,7 +21,7 @@ class Backpack:
 		return sum(values) - abs(self.capacity - sum(weights))
 
 def selection(population, fitnesses):
-	fitness_sum = sum(fitnesses)
+	fitness_sum = sum([max(x, 0) for x in fitnesses])
 	a = randint(1, max(fitness_sum, 2))
 	b = randint(1, max(fitness_sum, 2))
 	selected_a = None
@@ -58,7 +58,7 @@ def ga_solver(capacity, sizes, values):
 	i = 0
 	while True:
 		print(i)
-		print("population", population)
+		#print("population", population)
 
 		#evaluation
 		fitnesses = [b.get_fitness(x) for x in population]
@@ -67,24 +67,26 @@ def ga_solver(capacity, sizes, values):
 
 		#selection of pairs
 		pairs = [(selection(population, fitnesses)) for x in range(math.floor(population_size/2))]
-		print("pairs", pairs)
+		#print("pairs", pairs)
 
 		#crossover
 		new_population = [crossover(x, y) for (x, y) in pairs] #crossover returns tuples that must be unpacked
 		new_population = list(chain.from_iterable(new_population))
-		print("crossed", new_population)
+		#print("crossed", new_population)
 
 		#mutation
 		new_population = list(map(mutation, new_population))
-		print("mutated", new_population)
+		#print("mutated", new_population)
 
 		#update population
 		population = new_population + [population[fitnesses.index(max(fitnesses))]]
-		best_value = max(fitnesses)
+		best_fitness = max(fitnesses)
+		best_value = b.get_value(population[fitnesses.index(best_fitness)])
 		best_of_iter.append(best_value)
 		print("best: ", best_value)
 		i += 1
 		#stop criterium
+		if(i == 200): break
 		if(i>300):
 			if (best_of_iter[i-60] == best_of_iter[i - 1]): break
 
