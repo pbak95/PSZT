@@ -15,10 +15,25 @@ class Backpack:
 	def get_value(self, item_array):
 		values = [x for x, y  in zip(self.values, item_array) if y == 1]
 		return sum(values)
-	def get_fit(self, item_array):
+	def get_fitness(self, item_array):
+		values = [x for x, y  in zip(self.values, item_array) if y == 1]
 		weights = [x for x, y  in zip(self.weights, item_array) if y == 1]
-		return self.capacity - sum(weights)
+		return sum(values) if self.capacity >= sum(weights) else 0
 
+def selection(population, fitnesses):
+	fitness_sum = sum(fitnesses)
+	a = randint(1, max(fitness_sum, 2))
+	b = randint(1, max(fitness_sum, 2))
+	selected_a = None
+	selected_b = None
+
+	for f in fitnesses:
+		fitness_sum -= f
+		if (fitness_sum < a): selected_a = population[fitnesses.index(f)]
+		if (fitness_sum < b): selected_b = population[fitnesses.index(f)]
+		if (fitness_sum <= 0 or(selected_a != None and selected_b != None)): break
+
+	return (selected_a, selected_b)
 
 def crossover(x, y):
 	size = len(x)
@@ -27,47 +42,48 @@ def crossover(x, y):
 	child_b = y[:locus] + x[locus:]
 	return child_a, child_b
 
-W = 50
-w = [10, 20, 30]
-c = [60, 100, 120]
-values_a = [135,139,149,150,156,163,173,184,192,201,210,214,221,229,240]
-sizes_a = [70,73,77,80,82,87,90,94,98,106,110,113,115,118,120]
-capacity_a = 750
+def mutation(x):
+	mutation_indices = [randint(0, 9) == 0  for i in range(len(x))]
+	return [int(bool(a) ^ bool(b)) for a, b in zip(x, mutation_indices)]
+
 
 def ga_solver(capacity, sizes, values):
 	b = Backpack(sizes, values, capacity)
 
-	population_size = 5
+	population_size = 25
 	items_number = b.items_number
 
 	population = [[randint(0, 1) for i in range(items_number)] for j in range(population_size)]
 	best_of_iter = []
 
 	for i in range(50):
-		# print(i)
-		# print("population", population)
+		#print(i)
+		#print("population", population)
+
 		#evaluation
-		fitnesses = [b.get_value(x)-min(0, b.get_fit(x))**2 for x in population]
-		# print("fitnesses", fitnesses)
+		fitnesses = [b.get_fitness(x) for x in population]
+		fitnesses, population = zip(*sorted(zip(fitnesses, population), reverse = True))
+		#print("fitnesses", fitnesses)
+
 		#selection of pairs
-		pairs = [(choice(population), choice(population)) for x in range(math.floor(population_size/2))]
-		# print("pairs", pairs)
+		pairs = [(selection(population, fitnesses)) for x in range(math.floor(population_size/2))]
+		#print("pairs", pairs)
+
 		#crossover
-		new_population = [crossover(x, y) for (x, y) in pairs]
+		new_population = [crossover(x, y) for (x, y) in pairs] #crossover returns tuples that must be unpacked
 		new_population = list(chain.from_iterable(new_population))
-		# print("new", new_population)
+		#print("crossed", new_population)
+
 		#mutation
-		#new_population = 
+		new_population = list(map(mutation, new_population))
+		#print("mutated", new_population)
+
+		#update population
 		population = new_population + [population[fitnesses.index(max(fitnesses))]]
-		
-		feasible_indexes = [x for x in range(len(population)) if b.get_fit(population[x])>=0]
-		if (len(feasible_indexes) == 0):
-			best_value = 0
-		else:
-			best_value = max([fitnesses[x] for x in feasible_indexes])
+		best_value = max(fitnesses)
 		best_of_iter.append(best_value)
-		# print("feasible: ", len(feasible_indexes))
 		# print("best: ", best_value)
+		
 		#stop criterium
 		if(i>10):
 			if (best_of_iter[i-10] == best_of_iter[i]): break
