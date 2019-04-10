@@ -14,7 +14,10 @@ def get_test_data(path):
     for name in os.listdir(path):
         with open(os.path.join(path, name), "r") as file:
             example = {"weights": [], "values": []}
-            example["capacity"] = int(file.readline().split(" ")[1])
+            data_params = file.readline().split(" ")
+            example["capacity"] = int(data_params[1])
+            example["data_set"] = name
+            example["size"] = int(data_params[0])
             for line in file:
                 pairs = line.split(" ")
                 example["weights"].append(int(pairs[1]))
@@ -40,13 +43,20 @@ def generate_test_data(size, ratio):
     return example
 
 
-def test_alg(func, data):
+def test_alg(func, data, rounds):
     """ Tests given function with params: (capacity, weights, values) which returns optimum """
     for example in data:
-        start_time = time.clock()
-        result = func(example["capacity"], example["weights"], example["values"])
-        print("execution time:\t", time.clock() - start_time, " seconds")
-        print("optimum: \t%d\ttested: \t%d" % (example["optimum"], result))
+        avg_time = []
+        avg_result = []
+        for i in range(0, rounds):
+            start_time = time.clock()
+            avg_result.append(func(example["capacity"], example["weights"], example["values"]))
+            avg_time.append(time.clock() - start_time)
+        print("Result for dataset:\t%s , size:\t%s" % (example["data_set"], example["size"]))
+        print("Average execution time:\t", '{:.3}'.format(sum(avg_time)/rounds), " seconds")
+        avg_result_value = sum(avg_result)/rounds
+        print("accuracy:\t", '{:.1%}'.format(avg_result_value/example["optimum"]), "\t optimum: \t%d\t average result: \t%d" % (example["optimum"], avg_result_value))
+        print("\n")
 
 
 W = 50
