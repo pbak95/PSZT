@@ -6,6 +6,7 @@ from random import randint
 
 easy_path = os.path.join("test_data", "low_dimensional")
 hard_path = os.path.join("test_data", "large_scale")
+easy_path_full = os.path.join("test_data", "tmp_low_dimensional")
 
 
 def get_test_data(path):
@@ -32,7 +33,7 @@ def generate_test_data(size, ratio):
         ratio = backpack capacity / average item weight (uniform dist.)
         or average number of items fitting in backpack"""
     max_weight = 100
-    example = {"capacity": max_weight / 2 * ratio}
+    example = {"capacity": int(max_weight / 2 * ratio)}
     example["weights"] = [randint(1, max_weight) for _ in range(size)]
     example["values"] = [randint(1, 100) for _ in range(size)]
     example["optimum"] = None
@@ -46,3 +47,11 @@ def test_alg(func, data):
         result = func(example["capacity"], example["weights"], example["values"])
         print("execution time:\t", time.clock() - start_time, " seconds")
         print("optimum: \t%d\ttested: \t%d" % (example["optimum"], result))
+
+
+W = 50
+w = [10, 20, 30]
+c = [60, 100, 120]
+values_a = [135, 139, 149, 150, 156, 163, 173, 184, 192, 201, 210, 214, 221, 229, 240]
+sizes_a = [70, 73, 77, 80, 82, 87, 90, 94, 98, 106, 110, 113, 115, 118, 120]
+capacity_a = 750

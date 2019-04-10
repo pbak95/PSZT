@@ -63,7 +63,7 @@ def exchange_mutation(x, prob):
 def ga_solver(capacity, sizes, values):
 	b = Backpack(sizes, values, capacity)
 
-	population_size = 35
+	population_size = 15
 	items_number = b.items_number
 
 	population = [single_init(items_number) for _ in range(population_size)]
@@ -72,17 +72,17 @@ def ga_solver(capacity, sizes, values):
 	i = 0
 	while True:
 		print(i)
-		#print("population", population)
-
 		#sort
 		fitnesses, population = zip(*sorted(zip(fitnesses, population), reverse = True))
-
+		fitnesses = list(fitnesses)
+		population = list(population)
 		print("fitnesses", fitnesses)
+		#print("population", population)
 		# for x in population:
 		# 	print([index for index in range(len(x)) if x[index]])
 
 		#selection of pairs
-		pairs = [(selection(population, fitnesses)) for x in range(math.floor(population_size/2))]
+		pairs = [(selection(population, fitnesses)) for x in range(math.floor(population_size/2)-1)]
 		#print("pairs", pairs)
 
 		#crossover
@@ -91,22 +91,22 @@ def ga_solver(capacity, sizes, values):
 		#print("crossed", new_population)
 
 		#mutation
-		new_population = list(map(lambda x: exchange_mutation(x, 0.3), new_population))
-		new_population = list(map(lambda x: flip_mutation(x, 0.005), new_population))
+		new_population = list(map(lambda x: exchange_mutation(x, 0.1), new_population))
+		new_population = list(map(lambda x: flip_mutation(x, 0.01), new_population))
 
 		#print("mutated", new_population)
 
 		#update population
-		population = new_population + [population[fitnesses.index(max(fitnesses))]]
+		population = new_population + population[0:3]
 		fitnesses = [b.get_fitness(x) for x in population]
 		best_value = b.get_value(population[fitnesses.index(max(fitnesses))])
 		best_of_iter.append(best_value)
 
-		print("best: ", best_value)
+		#print("best: ", best_value)
 		i += 1
 		#stop criterium
-		if(i == 200): break
-		if(i>300):
+		
+		if(i>200):
 			if (best_of_iter[i-60] == best_of_iter[i - 1]): break
 
 	return best_of_iter[-1]
