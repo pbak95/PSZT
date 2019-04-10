@@ -1,6 +1,7 @@
 import sys
 import os
 import time
+from random import randint
 
 
 easy_path = os.path.join("test_data", "low_dimensional")
@@ -24,6 +25,18 @@ def get_test_data(path):
         data.append(example)
 
     return data
+
+def generate_test_data(size, ratio):
+    """Generates test data  where 
+        size = number of items
+        ratio = backpack capacity / average item weight (uniform dist.)
+        or average number of items fitting in backpack"""
+    max_weight = 100
+    example = {"capacity": max_weight / 2 * ratio}
+    example["weights"] = [randint(1, max_weight) for _ in range(size)]
+    example["values"] = [randint(1, 100) for _ in range(size)]
+    example["optimum"] = None
+    return example
 
 
 def test_alg(func, data):

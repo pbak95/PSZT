@@ -1,5 +1,5 @@
 from dynamicSolver import dynamic_alg
-from tester import get_test_data, easy_path, test_alg, hard_path
+from tester import get_test_data, generate_test_data, easy_path, test_alg, hard_path
 # from tester import *
 # from knapsackSolver import *
 from GASolver import ga_solver
@@ -22,3 +22,6 @@ capacity_a = 750
 
 #print(ga_solver(capacity_a, sizes_a, values_a))
 test_alg(ga_solver, data)
+
+# example = generate_test_data(1000, 5)
+# test_alg(ga_solver, [example])
